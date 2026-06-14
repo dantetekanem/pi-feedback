@@ -1,7 +1,7 @@
 {
   "name": "pi-feedback",
-  "version": "0.1.0",
-  "description": "Pi extension for structured session feedback, lightweight feedback logs, and optional memory/AGENTS follow-up suggestions.",
+  "version": "0.1.1",
+  "description": "Installable Pi extension for structured session feedback, lightweight feedback logs, and optional memory/AGENTS follow-up suggestions.",
   "type": "module",
   "packageManager": "pnpm@11.5.2",
   "keywords": [
@@ -9,6 +9,14 @@
     "pi-extension",
     "feedback"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dantetekanem/pi-feedback.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dantetekanem/pi-feedback/issues"
+  },
+  "homepage": "https://github.com/dantetekanem/pi-feedback#readme",
   "files": [
     "src",
     "README.md"

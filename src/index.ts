@@ -1,10 +1,12 @@
 import type { AssistantMessage, TextContent, ToolCall } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionCommandContext, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
 import { basename, dirname, join } from "node:path";
 
 const CUSTOM_TYPE = "pi-feedback";
 const FEEDBACK_FILE = "FEEDBACK.md";
+const GLOBAL_FEEDBACK_PATH = join(homedir(), ".pi", "agent", FEEDBACK_FILE);
 const STORE_START = "<!-- pi-feedback:start -->";
 const STORE_END = "<!-- pi-feedback:end -->";
 const STORE_VERSION = 1;
@@ -246,7 +248,7 @@ const normalizeStore = (value: unknown): FeedbackStore => {
 	};
 };
 
-const feedbackPath = (cwd: string): string => join(cwd, FEEDBACK_FILE);
+const feedbackPath = (_cwd: string): string => GLOBAL_FEEDBACK_PATH;
 
 const extractStoreJson = (raw: string): string | undefined => {
 	const start = raw.indexOf(STORE_START);

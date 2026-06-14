@@ -1,6 +1,8 @@
 # pi-feedback
 
-A Pi extension package that adds `/feedback` for quick session ratings:
+A Pi extension package that adds `/feedback` for quick, structured feedback across Pi sessions.
+
+Ratings:
 
 - `terrible`
 - `bad`
@@ -8,17 +10,53 @@ A Pi extension package that adds `/feedback` for quick session ratings:
 - `great`
 - `perfect`
 
-It records a short, structured `FEEDBACK.md` in the current project, then analyzes the current session in the background and stores granular reasons, durable memory suggestions, repeated patterns, and AGENTS.md candidates.
+The extension records a short global feedback log at `~/.pi/agent/FEEDBACK.md`, then analyzes the current session in the background without asking follow-up questions. It extracts granular reasons, durable memory suggestions, repeated patterns, and candidate AGENTS.md rules.
 
-## Install / load
+## Install
 
-For local development:
+### Recommended: global install
+
+Install once for your computer:
 
 ```bash
-pi -e ./src/index.ts
+pi install git:github.com/dantetekanem/pi-feedback
 ```
 
-As a Pi package, the `package.json` manifest exposes `./src/index.ts` under `pi.extensions`.
+Or with the full HTTPS URL:
+
+```bash
+pi install https://github.com/dantetekanem/pi-feedback
+```
+
+Then reload your active Pi session:
+
+```text
+/reload
+```
+
+Verify it loaded:
+
+```text
+/feedback status
+```
+
+Global install is the default. Do **not** pass `-l` unless you intentionally want project-local `.pi/settings.json` state.
+
+### One-off preview
+
+Run Pi with the extension temporarily:
+
+```bash
+pi -e git:github.com/dantetekanem/pi-feedback
+```
+
+### Local development
+
+```bash
+git clone https://github.com/dantetekanem/pi-feedback.git
+cd pi-feedback
+pi -e ./src/index.ts
+```
 
 ## Usage
 
@@ -26,9 +64,10 @@ As a Pi package, the `package.json` manifest exposes `./src/index.ts` under `pi.
 /feedback
 /feedback great
 /feedback bad missed the requested scope and ran broad checks
+/feedback bad ignored extensions to ask questions, did not try to install and let me preview extension
 ```
 
-Without a rating argument, `/feedback` opens a picker. With a rating argument, it records immediately and starts background analysis without asking follow-up questions.
+Without a rating argument, `/feedback` opens a picker. With a rating argument, it records immediately and starts background analysis. Everything after the rating is treated as optional extra feedback and included in `~/.pi/agent/FEEDBACK.md` plus the background analysis.
 
 ## Settings
 
@@ -42,22 +81,28 @@ Without a rating argument, `/feedback` opens a picker. With a rating argument, i
 /feedback agents-on
 /feedback agents-off
 /feedback threshold 3
+/feedback max-entries 20
 ```
 
-Defaults are conservative:
+Defaults:
 
 - session-end nudges: on
 - memory follow-up messages: off
 - AGENTS.md candidate follow-up messages: off
 - repeated-pattern threshold: 3
+- max retained entries: 20
 
-Pi extension docs expose commands, session access, model calls, `sendUserMessage`, and custom session entries, but no direct external-memory API. Because of that, pi-feedback writes memory suggestions into `FEEDBACK.md` and can optionally queue a follow-up user message to ask the active agent to update memory if a memory tool is available.
+Settings are stored in the same global feedback file, so they apply across projects and sessions.
 
-AGENTS.md updates are never automatic. Repeated patterns become candidates in `FEEDBACK.md`; optional follow-ups only summarize candidates and instruct the agent not to edit AGENTS.md without explicit user approval.
+## Memory and AGENTS.md behavior
 
-## FEEDBACK.md format
+Pi extension APIs expose commands, session access, model calls, `sendUserMessage`, and custom session entries, but no direct external-memory API. Because of that, pi-feedback writes memory suggestions into `~/.pi/agent/FEEDBACK.md` and can optionally queue a follow-up user message asking the active agent to update memory if a memory tool is available.
 
-`FEEDBACK.md` keeps a machine-readable JSON block between:
+AGENTS.md updates are never automatic. Repeated patterns become candidates in `~/.pi/agent/FEEDBACK.md`; optional follow-ups only summarize candidates and instruct the agent not to edit AGENTS.md without explicit user approval.
+
+## Global FEEDBACK.md format
+
+`~/.pi/agent/FEEDBACK.md` keeps a machine-readable JSON block between:
 
 ```text
 <!-- pi-feedback:start -->
@@ -66,3 +111,20 @@ AGENTS.md updates are never automatic. Repeated patterns become candidates in `F
 ```
 
 The extension preserves any content outside that managed block and limits retained entries/patterns to keep the file short.
+
+## Development
+
+```bash
+pnpm install
+pnpm run typecheck
+```
+
+Pi package metadata lives in `package.json`:
+
+```json
+{
+  "pi": {
+    "extensions": ["./src/index.ts"]
+  }
+}
+```
