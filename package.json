@@ -1,0 +1,36 @@
+{
+  "name": "pi-feedback",
+  "version": "0.1.0",
+  "description": "Pi extension for structured session feedback, lightweight feedback logs, and optional memory/AGENTS follow-up suggestions.",
+  "type": "module",
+  "packageManager": "pnpm@11.5.2",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "feedback"
+  ],
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
